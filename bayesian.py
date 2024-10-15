@@ -18,14 +18,11 @@ class StateGenerator:
 
         Output:
             Returns a state. A state is as 2-tuple (positions, dimensions), where
-             -  Positions is represented as an encoded positions tuple (entries from 0 to nrows*ncols)
-                This means positions is a tuple with self.npieces entries, and each
-                entry is an integer on the interval [0, self.nrows*self.ncols]
+             -  Positions is represented as a list of position (x,y) tuples 
              -  Dimensions is a 2-tuple (self.nrows, self.ncols)
 
             For example, if the dimensions of the board are 2 rows, 3 columns, and the number of pieces
-            is 4, then a valid return state would be ((0,3,2,4), (2,3)) because it has 4 positions, each
-            of which is an integer on [0,2*3].
+            is 4, then a valid return state would be ([(0, 0) , (0, 1), (0, 2), (1, 1)], (2,3))
         """
         ## Returns positions in encoded format.
         ## Without loss of generalization, we assume that positions[1:] are fixes; only
