@@ -22,7 +22,7 @@ class StateGenerator:
              -  Dimensions is a 2-tuple (self.nrows, self.ncols)
 
             For example, if the dimensions of the board are 2 rows, 3 columns, and the number of pieces
-            is 4, then a valid return state would be ([(0, 0) , (0, 1), (0, 2), (1, 1)], (2,3))
+            is 4, then a valid return state would be ([(0, 0) , (1, 0), (2, 0), (1, 1)], (2,3))
         """
         ## Returns positions in encoded format.
         ## Without loss of generalization, we assume that positions[1:] are fixes; only
