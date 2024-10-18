@@ -18,13 +18,13 @@ class StateGenerator:
 
         Output:
             Returns a state. A state is as 2-tuple (positions, dimensions), where
-             -  Positions is represented as a list of position (x,y) tuples 
+             -  Positions is represented as a list of position (c,r) tuples 
              -  Dimensions is a 2-tuple (self.nrows, self.ncols)
 
             For example, if the dimensions of the board are 2 rows, 3 columns, and the number of pieces
             is 4, then a valid return state would be ([(0, 0) , (1, 0), (2, 0), (1, 1)], (2,3))
         """
-        ## Returns positions in encoded format.
+        ## Returns positions in decoded format. i.e. list of (c,r) i.e. (x,y)
         ## Without loss of generalization, we assume that positions[1:] are fixes; only
         ## positions[0] will be moved
         positions = self.rng.choice(self.nrows*self.ncols, size=self.npieces, replace=False)
