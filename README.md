@@ -1,7 +1,7 @@
 # **Assignment 4: Bayesian Inference**
 
-In this assignment, you will use Bayesian inference to track the position of a single piece on the gameboard of [End of the Track](https://www.gaya-game.com/products/the-end-of-the-track), a two-player zero-sum board game, under an imperfect observation model. Please refer to Assignment 2 for the original rules of the game, which describe how the game pieces move.
-**_Note_**: you don't need any code from assignment2 or assignment3 for this assignment.
+In this assignment, you will use Bayesian inference to track the position of a single piece on the gameboard of [End of the Track](https://www.gaya-game.com/products/the-end-of-the-track), a two-player zero-sum board game, under an imperfect observation model. Please refer to Assignment 2 for the original rules of the game, which describe how the game pieces move, However, for this assignment, You only need care whether the action will move the piece out of bound of board, or move the piece to occupied position or not. In either such cases, returns None for the state, and a zero probability distribution. You don't need check it is knight move, queen move or king move for give action. 
+**_Note_**: You don't need any code from assignment2 or assignment3 for this assignment.
 
 **Description of the Observation Model:**
 
