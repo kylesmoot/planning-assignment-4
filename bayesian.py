@@ -46,7 +46,7 @@ def sample_observation(state):
 
     Returns:
         A tuple (position, distribution) where:
-         - Position is a sampled postion which is a 2-tuple (c, r), which represents the sampled observation
+         - Position is a sampled position which is a 2-tuple (c, r), which represents the sampled observation
          - Distribution is a 2D numpy array representing the observation distribution
 
     NOTE: the array representing the distribution should have a shape of (nrows, ncols)
