@@ -52,6 +52,5 @@ The assignment is worth 41 points in total. There are an additional 3 extra cred
 
 
 # Submission Instructions
-Please submit a **zip file** in Gradescope under AI388U-assignment4. Your zip file should include the following two files only, no nested folders:
+Please submit a **zip file** in Gradescope under AI388U-assignment4. Your zip file should include the following file only, no nested folders:
 - `bayesian.py`
-- `test_bayesian.py`
