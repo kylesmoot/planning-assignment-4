@@ -48,6 +48,9 @@ def get_pieces(state):
 def get_rows(state):
     return state[1][0]
 
+def is_oob(col, row, ncols, nrows):
+    return col < 0 or col >= ncols or row < 0 or row >= nrows
+
 def sample_observation(state):
     """
     Given a state, sample an observation from it. Specifically, the positions[1:] locations are
@@ -79,7 +82,6 @@ def sample_observation(state):
     # create 1-D prob. dist.
     p = np.zeros(5)
 
-    i = 0
     for i in range(len(p)):
         if i == 0:
             p[i] = 0.6
@@ -88,27 +90,33 @@ def sample_observation(state):
             pc = choices[i]
             c = pc[0]
             r = pc[1]
-            if c < 0 or c >= ncols or r < 0 or r >= nrows:
-                continue
 
             # if the adjacent spot is occupied, then
             # add 0.1 to pos location, otherwise
             # set to 0.1
-            if pc in pieces:
+            if is_oob(c, r, ncols, nrows):
                 p[0] += 0.1
-                p[i] = 0
+            elif pc in pieces:
+                p[0] += 0.1
             else:
                 p[i] = 0.1
 
+    print('pieces', pieces)
+    print('choices', choices, 'p', p)
     # sample a noisy observation based on the distribution
-    sample = np.random.choice(choices, 1, p=p)
+    sample = choices[np.random.choice(range(len(choices)), size=None, p=p)]
     
     # convert p to 2d array
-    dist = np.zeros((nrows, ncols))
+    dist = np.zeros((ncols, nrows))
     for i in range(len(p)):
         pc = choices[i]
         c = pc[0]
         r = pc[1]
+
+        # skip if adjacent piece is OOB
+        if is_oob(c, r, ncols, nrows):
+            continue
+
         dist[c, r] = p[i]
 
     return tuple((sample, dist))
