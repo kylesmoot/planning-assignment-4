@@ -36,6 +36,18 @@ class StateGenerator:
         c = position - self.ncols * r
         return (c, r)
 
+def get_cols(state):
+    return state[1][1]
+
+def get_pos(state):
+    return state[0][0]
+
+def get_pieces(state):
+    return state[0][1:]
+
+def get_rows(state):
+    return state[1][0]
+
 def sample_observation(state):
     """
     Given a state, sample an observation from it. Specifically, the positions[1:] locations are
@@ -51,7 +63,57 @@ def sample_observation(state):
 
     NOTE: the array representing the distribution should have a shape of (nrows, ncols)
     """
-    pass
+
+    pos = get_pos(state)
+    pieces = get_pieces(state)
+    ncols = get_cols(state)
+    nrows = get_rows(state)
+    
+    pos_n = tuple((pos[0], pos[1] - 1))
+    pos_s = tuple((pos[0], pos[1] + 1))
+    pos_e = tuple((pos[0] + 1, pos[1]))
+    pos_w = tuple((pos[0] - 1, pos[1]))
+
+    choices = list((pos, pos_n, pos_s, pos_e, pos_w))
+
+    # create 1-D prob. dist.
+    p = np.zeros(5)
+
+    i = 0
+    for i in range(len(p)):
+        if i == 0:
+            p[i] = 0.6
+        else:
+            # if an adjacent spot is OOB, we skip
+            pc = choices[i]
+            c = pc[0]
+            r = pc[1]
+            if c < 0 or c >= ncols or r < 0 or r >= nrows:
+                continue
+
+            # if the adjacent spot is occupied, then
+            # add 0.1 to pos location, otherwise
+            # set to 0.1
+            if pc in pieces:
+                p[0] += 0.1
+                p[i] = 0
+            else:
+                p[i] = 0.1
+
+    # sample a noisy observation based on the distribution
+    sample = np.random.choice(choices, 1, p=p)
+    
+    # convert p to 2d array
+    dist = np.zeros((nrows, ncols))
+    for i in range(len(p)):
+        pc = choices[i]
+        c = pc[0]
+        r = pc[1]
+        dist[c, r] = p[i]
+
+    return tuple((sample, dist))
+
+
 
 def sample_transition(state, action):
     """
