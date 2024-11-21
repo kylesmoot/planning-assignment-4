@@ -191,10 +191,31 @@ def initialize_belief(initial_state, style="uniform"):
         onto the actual position on the piece).
     
     """
+    pos = get_pos(initial_state)
+    pieces = get_pieces(initial_state)
+    ncols = get_cols(initial_state)
+    nrows = get_rows(initial_state)
+
+    belief = np.zeros((nrows, ncols))
     if style == "uniform":
-        pass
+        # prob for an unoccupied space is 
+        # 1 divided by the total number of unoccupied spaces
+        total_spaces = nrows * ncols
+        prob = 1 / (total_spaces - len(pieces) - 1)
+
+        for r in range(len(nrows)):
+            for c in range(len(ncols)):
+                pc = tuple((c, r))  # pieces are ordered (col, row)
+                if pc == pos or pc in pieces:
+                    continue
+                belief[r, c] = prob
+
     if style == "dirac":
-        pass
+        # prob should be 1 just at the
+        # current position
+        belief[pos[1], pos[0]] = 1 # pos is ordered (c, r), while the belief is ordered (r,c)
+
+    return belief
 
 def belief_update(prior, observation, reference_state):
     """
