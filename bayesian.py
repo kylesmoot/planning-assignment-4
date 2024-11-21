@@ -144,7 +144,33 @@ def sample_transition(state, action):
             - transition_probabilities is a 2D numpy array with shape (nrows, ncols) that accurately reflects
                 the probability of ending up at a certain position on the board given the action. 
     """
-    pass
+    pos = get_pos(state)
+    pieces = get_pieces(state)
+    ncols = get_cols(state)
+    nrows = get_rows(state)
+
+    dc = action[0]
+    dr = action[1]
+
+    pos_c = pos[0]
+    pos_r = pos[1]
+
+    # get new position
+    c_new = pos_c + dc
+    r_new = pos_r + dr
+
+    pos_new = tuple((c_new, r_new))
+
+    if is_oob(c_new, r_new, ncols, nrows) or pos_new in pieces:
+        pos_new = None
+    
+    # generate new prob dist.
+    dist = np.zeros((nrows, ncols))
+    if pos_new is not None:
+        dist[r_new, c_new] = 1
+
+    return tuple((pos_new, dist))
+        
  
 def initialize_belief(initial_state, style="uniform"):
     """
