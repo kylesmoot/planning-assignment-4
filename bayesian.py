@@ -107,7 +107,7 @@ def sample_observation(state):
     sample = choices[np.random.choice(range(len(choices)), size=None, p=p)]
     
     # convert p to 2d array
-    dist = np.zeros((ncols, nrows))
+    dist = np.zeros((nrows, ncols))
     for i in range(len(p)):
         pc = choices[i]
         c = pc[0]
@@ -117,7 +117,7 @@ def sample_observation(state):
         if is_oob(c, r, ncols, nrows):
             continue
 
-        dist[c, r] = p[i]
+        dist[r, c] = p[i]
 
     return tuple((sample, dist))
 
