@@ -121,8 +121,6 @@ def sample_observation(state):
 
     return tuple((sample, dist))
 
-
-
 def sample_transition(state, action):
     """
     Given a state and an action, 
@@ -170,7 +168,6 @@ def sample_transition(state, action):
         dist[r_new, c_new] = 1
 
     return tuple((pos_new, dist))
-        
  
 def initialize_belief(initial_state, style="uniform"):
     """
@@ -203,8 +200,8 @@ def initialize_belief(initial_state, style="uniform"):
         total_spaces = nrows * ncols
         prob = 1 / (total_spaces - len(pieces) - 1)
 
-        for r in range(len(nrows)):
-            for c in range(len(ncols)):
+        for r in range(nrows):
+            for c in range(ncols):
                 pc = tuple((c, r))  # pieces are ordered (col, row)
                 if pc == pos or pc in pieces:
                     continue
@@ -229,7 +226,31 @@ def belief_update(prior, observation, reference_state):
     Returns:
         posterior: a 2D numpy array with shape (nrows, ncols)
     """
-    pass
+    ncols = get_cols(reference_state)
+    nrows = get_rows(reference_state)
+
+    posterior = prior
+    
+    # we need a new distribution based on the observation
+    pieces = reference_state[0]
+    np.insert(pieces, 0, observation)
+    obs_state = tuple(pieces, reference_state[1])
+    obs = sample_observation(obs_state)
+    obs_p = obs[1]
+
+    # update all cells in the posterior
+    sum = 0
+    for r in range(nrows):
+        for c in range(ncols):
+            posterior[r, c] = obs_p[r, c] * posterior[r, c]
+            sum += posterior[r, c]
+
+    # normalize posterior
+    for r in range(nrows):
+        for c in range(ncols):
+            posterior[r, c] = posterior[r, c] / sum
+
+    return posterior
 
 def belief_predict(prior, action, reference_state):
     """
