@@ -266,7 +266,20 @@ def belief_predict(prior, action, reference_state):
     Returns:
         posterior: a 2D numpy array with shape (nrows, ncols)
     """
-    pass
+    ncols = get_cols(reference_state)
+    nrows = get_rows(reference_state)
+    
+    posterior = np.zeros(nrows, ncols)
+    transition = sample_transition(reference_state, action)
+
+    for r in range(nrows):
+        for c in range(ncols):
+            # Bel[x] = p(x | x', u) * Bel[x']
+            for r_prime in range(nrows):
+                for c_prime in range(ncols):
+                    posterior[r, c] += transition[r_prime, c_prime] * prior[r_prime, c_prime]
+
+    return posterior
 
 if __name__ == "__main__":
     gen = StateGenerator()
