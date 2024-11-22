@@ -38,12 +38,19 @@ class TestBayesianInference:
             [(3,5),(3,3),(3,4)], "dirac",
         ),
     ])
-    def test_example_obserations(self, initial_state, observation_list,prior_style):
+    def test_example_observations(self, initial_state, observation_list,prior_style):
         """
         This test represents some sample test cases for you to test your Bayesian update;
         you should implement the tests here. Feel free to add additional parameters.
         """
-        pass
+        belief = initialize_belief(initial_state, prior_style)
+        print('initial_belief', belief)
+
+        for obs in observation_list:
+            belief = belief_update(belief, obs, initial_state)
+
+        assert(belief == 0)
+
 
     @pytest.mark.parametrize("initial_state,action_list,prior_style", [
         (

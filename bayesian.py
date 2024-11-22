@@ -198,7 +198,7 @@ def initialize_belief(initial_state, style="uniform"):
         # prob for an unoccupied space is 
         # 1 divided by the total number of unoccupied spaces
         total_spaces = nrows * ncols
-        prob = 1 / (total_spaces - len(pieces) - 1)
+        prob = 1 / (total_spaces - len(pieces))
 
         for r in range(nrows):
             for c in range(ncols):
@@ -234,7 +234,7 @@ def belief_update(prior, observation, reference_state):
     # we need a new distribution based on the observation
     pieces = reference_state[0]
     np.insert(pieces, 0, observation)
-    obs_state = tuple(pieces, reference_state[1])
+    obs_state = tuple((pieces, reference_state[1]))
     obs = sample_observation(obs_state)
     obs_p = obs[1]
 
