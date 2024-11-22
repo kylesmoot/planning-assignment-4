@@ -203,7 +203,7 @@ def initialize_belief(initial_state, style="uniform"):
         for r in range(nrows):
             for c in range(ncols):
                 pc = tuple((c, r))  # pieces are ordered (col, row)
-                if pc == pos or pc in pieces:
+                if pc in pieces:
                     continue
                 belief[r, c] = prob
 
