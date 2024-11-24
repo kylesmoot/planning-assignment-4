@@ -36,6 +36,12 @@ class StateGenerator:
         c = position - self.ncols * r
         return (c, r)
 
+def create_state(c, r, ref_state):
+    pc = tuple((c, r))
+    pieces = get_pieces(ref_state)
+    pieces.insert(0, pc)
+    return tuple((pieces, ref_state[1]))
+
 def get_cols(state):
     return state[1][1]
 
@@ -145,15 +151,12 @@ def sample_transition(state, action):
     ncols = get_cols(state)
     nrows = get_rows(state)
 
-    dc = action[0]
-    dr = action[1]
-
-    pos_c = pos[0]
-    pos_r = pos[1]
+    dc, dr = action
+    pos_c, pos_r = pos
 
     # get new position
-    c_new = pos_c + dc
-    r_new = pos_r + dr
+    c_new = pos_c - dc
+    r_new = pos_r - dr
 
     pos_new = tuple((c_new, r_new))
 
@@ -234,10 +237,7 @@ def belief_update(prior, observation, reference_state):
     sum = 0
     for r in range(nrows):
         for c in range(ncols):
-            pc = tuple((c, r))
-            pieces = get_pieces(reference_state)
-            pieces.insert(0, pc)
-            state = tuple((pieces, reference_state[1]))
+            state = create_state(c, r, reference_state)
             obs_pos, obs_p = sample_observation(state)
             posterior[r, c] = obs_p[obs_r, obs_c] * prior[r, c]
             sum += posterior[r, c]
@@ -267,23 +267,27 @@ def belief_predict(prior, action, reference_state):
     nrows = get_rows(reference_state)
     
     posterior = np.zeros((nrows, ncols))
-    transition = sample_transition(reference_state, action)
+    pieces = get_pieces(reference_state)
 
     for r in range(nrows):
         for c in range(ncols):
             # Bel[x] = p(x | x', u) * Bel[x']
+            pc = tuple((c, r))
             posterior[r, c] = 0
+            state = create_state(c, r, reference_state)
+            trans_pos, trans_p = sample_transition(state, action)
             for r_prime in range(nrows):
                 for c_prime in range(ncols):
-                    posterior[r, c] += transition[1][r_prime, c_prime] * prior[r_prime, c_prime]
-
+                    posterior[r, c] += trans_p[r_prime, c_prime] * prior[r_prime, c_prime]
     return posterior
 
 if __name__ == "__main__":
     gen = StateGenerator()
     #initial_state = gen.sample_state()
-    initial_state = ([(3, 4), (6, 4), (3, 7), (5, 1), (0, 3), (1, 0), (2, 5), (5, 5), (1, 3), (4, 7)], (8, 7))
-    obs = (3, 5)
+    initial_state = ([(3, 6), (0, 5), (2, 7), (5, 7), (2, 0), (4, 5), (0, 4), (2, 2), (5, 6), (6, 4)], (8, 7))
+    #initial_state = ([(6, 5), (0, 1), (1, 2), (3, 7), (4, 4), (2, 6), (0, 4), (6, 0), (0, 2), (3, 6)], (8, 7))
+    #obs = (6, 5)
+    obs = (3, 6)
     #obs, dist = sample_observation(initial_state)
     print(initial_state)
     #print(obs)

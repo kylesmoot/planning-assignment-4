@@ -85,7 +85,11 @@ class TestBayesianInference:
         ),
     ])
     def test_example_actions(self, initial_state, action_list,prior_style):
-        pass
+        b = initialize_belief(initial_state, prior_style)
+        for a in action_list:
+            b = belief_predict(b, a, initial_state)
+            print(b)
+            assert b == 0
      
     @pytest.mark.parametrize("state", [
         ([(3, 4), (6, 4), (3, 7), (5, 1), (0, 3), (1, 0), (2, 5), (5, 5), (1, 3), (4, 7)], (8, 7)),
