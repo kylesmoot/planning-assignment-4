@@ -235,7 +235,7 @@ def belief_update(prior, observation, reference_state):
     for r in range(nrows):
         for c in range(ncols):
             pc = tuple((c, r))
-            pieces = list(reference_state[0])
+            pieces = get_pieces(reference_state)
             pieces.insert(0, pc)
             state = tuple((pieces, reference_state[1]))
             obs_pos, obs_p = sample_observation(state)
