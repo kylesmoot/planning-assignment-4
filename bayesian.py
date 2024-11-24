@@ -100,9 +100,7 @@ def sample_observation(state):
                 p[0] += 0.1
             else:
                 p[i] = 0.1
-
-    print('pieces', pieces)
-    print('choices', choices, 'p', p)
+                
     # sample a noisy observation based on the distribution
     sample = choices[np.random.choice(range(len(choices)), size=None, p=p)]
     
@@ -229,20 +227,19 @@ def belief_update(prior, observation, reference_state):
     ncols = get_cols(reference_state)
     nrows = get_rows(reference_state)
 
-    posterior = prior
-    
-    # we need a new distribution based on the observation
-    pieces = reference_state[0]
-    np.insert(pieces, 0, observation)
-    obs_state = tuple((pieces, reference_state[1]))
-    obs = sample_observation(obs_state)
-    obs_p = obs[1]
+    posterior = np.zeros((nrows, ncols))
+    obs_c, obs_r = observation
 
     # update all cells in the posterior
     sum = 0
     for r in range(nrows):
         for c in range(ncols):
-            posterior[r, c] = obs_p[r, c] * posterior[r, c]
+            pc = tuple((c, r))
+            pieces = list(reference_state[0])
+            pieces.insert(0, pc)
+            state = tuple((pieces, reference_state[1]))
+            obs_pos, obs_p = sample_observation(state)
+            posterior[r, c] = obs_p[obs_r, obs_c] * prior[r, c]
             sum += posterior[r, c]
 
     # normalize posterior
@@ -269,25 +266,28 @@ def belief_predict(prior, action, reference_state):
     ncols = get_cols(reference_state)
     nrows = get_rows(reference_state)
     
-    posterior = np.zeros(nrows, ncols)
+    posterior = np.zeros((nrows, ncols))
     transition = sample_transition(reference_state, action)
 
     for r in range(nrows):
         for c in range(ncols):
             # Bel[x] = p(x | x', u) * Bel[x']
+            posterior[r, c] = 0
             for r_prime in range(nrows):
                 for c_prime in range(ncols):
-                    posterior[r, c] += transition[r_prime, c_prime] * prior[r_prime, c_prime]
+                    posterior[r, c] += transition[1][r_prime, c_prime] * prior[r_prime, c_prime]
 
     return posterior
 
 if __name__ == "__main__":
     gen = StateGenerator()
-    initial_state = gen.sample_state()
-    obs, dist = sample_observation(initial_state)
+    #initial_state = gen.sample_state()
+    initial_state = ([(3, 4), (6, 4), (3, 7), (5, 1), (0, 3), (1, 0), (2, 5), (5, 5), (1, 3), (4, 7)], (8, 7))
+    obs = (3, 5)
+    #obs, dist = sample_observation(initial_state)
     print(initial_state)
-    print(obs)
-    print(dist)
+    #print(obs)
+    #print(dist)
     b = initialize_belief(initial_state, style="uniform")
     print(b)
     b = belief_update(b, obs, initial_state)

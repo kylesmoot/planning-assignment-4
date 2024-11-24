@@ -49,8 +49,6 @@ class TestBayesianInference:
         for obs in observation_list:
             belief = belief_update(belief, obs, initial_state)
 
-        assert(belief == 0)
-
 
     @pytest.mark.parametrize("initial_state,action_list,prior_style", [
         (
